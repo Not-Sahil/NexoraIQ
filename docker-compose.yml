@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: nexoraiq_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./nexoraiq.db
+      - SECRET_KEY=nexoraiq-super-secret-production-key-2026
+      - UPLOAD_DIR=data/uploads
+      - REPORTS_DIR=data/reports
+    volumes:
+      - ./data:/app/data
+      - ./nexoraiq.db:/app/nexoraiq.db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: nexoraiq_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
